@@ -3,13 +3,10 @@
 
 class phpCrawler {
 
-	private $url;
-	private $depth;
 
-	private $htmlPage;
-
-	private __construct($URL, $DEPTH) {
-		
+	function __construct() { }
+	//private __construct() { } 
+		/*
 		//check if the url it's valid
 		if ( filter_var($URL, FILTER_VALIDATE_URL) === TRUE ) {
 			$url = $URL;
@@ -19,18 +16,26 @@ class phpCrawler {
 		if (is_int($DEPTH) ) {
 			$depth = $DEPTH;
 		}
-	}
+	} */
 
 	public function getNodes($url) {
 
 		$htmlPage = file_get_contents($url);
 
-		$list = []
+		$list = [];
 		$index = 0;
 
 
 		if ( $htmlPage != FALSE ) {
-			foreach( $dom->getElementsBytTagName('a') as $node) {
+
+			//http://stackoverflow.com/questions/6090667/php-domdocument-errors-warnings-on-html5-tags
+			// libxml_use_internal_errors(true) and libxml_clear_errors() to hide html5 warnings
+			$dom = new DOMDocument;
+			libxml_use_internal_errors(true);
+			$dom->loadHTML($htmlPage);
+			libxml_clear_errors();
+
+			foreach( $dom->getElementsByTagName('a') as $node) {
 				$list[$index] = $node->getAttribute('href');
 				$index++;
 			}
@@ -39,30 +44,10 @@ class phpCrawler {
 		return $list;
 	}
 
+	private $url;
+	private $depth;
 
-	public function runkit_import(filename)() {
-		
-		$htmlPage = file_get_contents($url);
-
-		$lista = []
-
-		$auxUrl = $url;
-
-		if ( $htmlPage != FALSE ) {
-
-			$dom = new DOMDocument;
-			$dom->loadHTML($htmlPage);
-
-			$list = []
-
-			$index = 0;
-			foreach( $dom->getElementsBytTagName('a') as $node) {
-				$list[$index] = $node->getAttribute('href');
-				$index++;
-			}
-		}
-		
-	}
+	private $htmlPage;
 
 }
 
