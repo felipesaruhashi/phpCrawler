@@ -38,6 +38,32 @@ class phpCrawler {
 
 		return $list;
 	}
+
+
+	public function runkit_import(filename)() {
+		
+		$htmlPage = file_get_contents($url);
+
+		$lista = []
+
+		$auxUrl = $url;
+
+		if ( $htmlPage != FALSE ) {
+
+			$dom = new DOMDocument;
+			$dom->loadHTML($htmlPage);
+
+			$list = []
+
+			$index = 0;
+			foreach( $dom->getElementsBytTagName('a') as $node) {
+				$list[$index] = $node->getAttribute('href');
+				$index++;
+			}
+		}
+		
+	}
+
 }
 
 ?>
