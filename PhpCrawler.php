@@ -5,6 +5,9 @@ class phpCrawler {
 	private $visitedURL;
 	private $count;
 	private $depth;
+	private $url;
+	private $urlParsed;
+	private $host;
 	const max_nodes = 100;
 
 	public function getNodes($url) {
@@ -27,7 +30,7 @@ class phpCrawler {
 			libxml_clear_errors();
 
 			foreach( $dom->getElementsByTagName('a') as $node) {
-				if (!array_key_exists($node->getAttribute('href'),$this->visitedURL) && $this->count < 100) {
+				if ( !$this->isSubDomain($node->getAttribute('href')) && !array_key_exists($node->getAttribute('href'),$this->visitedURL) && $this->count < 100) {
 					$list[$index] = $node->getAttribute('href');
 					$index++;
 				}
@@ -49,6 +52,10 @@ class phpCrawler {
 			$this->visitedURL = []; //map with the already visited urls, to avoid cycles
 			$this->count = 0;
 			$this->depth = $DEPTH;
+			
+			$this->host = $this->getDomain($URL);
+
+			echo $this->host;
 
 			$this->visitedURL[$URL] = TRUE;//set as the root node as already visited.
 
@@ -58,8 +65,7 @@ class phpCrawler {
 		return $result;
 	}
 
-
-	public function depthFirstSearch($url, $currentDepth) {
+	private function depthFirstSearch($url, $currentDepth) {
 		
 		if($this->count >= self::max_nodes || $currentDepth ==  $this->depth) {
 			//if already have
@@ -80,6 +86,28 @@ class phpCrawler {
 			return $return;
 		}
 
+	}
+
+	private function isSubDomain($URL) {
+
+		if ( filter_var($URL, FILTER_VALIDATE_URL) == TRUE) {
+
+			if($this->getDomain($URL) == $this->host ) {
+				return true;
+			} else {
+				return false;
+			}
+		} 
+		return false;
+	}
+
+	private function getDomain($url) {
+		$pieces = parse_url($url);
+		$domain = isset($pieces['host']) ? $pieces['host'] : '';
+		if (preg_match('/(?P<domain>[a-z0-9][a-z0-9\-]{1,63}\.[a-z\.]{2,6})$/i', $domain, $regs)) {
+			return $regs['domain'];
+		}
+		return false;
 	}
 }
 
