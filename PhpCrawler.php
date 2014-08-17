@@ -41,13 +41,19 @@ class phpCrawler {
 
 	public function run($URL, $DEPTH) {
 
-		$this->visitedURL = []; //map with the already visited urls, to avoid cycles
-		$this->count = 0;
-		$this->depth = $DEPTH;
+		$result = [];
 
-		$this->visitedURL[$URL] = TRUE;//set as the root node as already visited.
+		if(filter_var($URL, FILTER_VALIDATE_URL) == TRUE && is_numeric($DEPTH) ) {
+			//check if $URL it's a valid url and $DEPTH it's numeric
 
-		$result[$URL] = $this->depthFirstSearch($URL, 1);//call the depth first search recursive function
+			$this->visitedURL = []; //map with the already visited urls, to avoid cycles
+			$this->count = 0;
+			$this->depth = $DEPTH;
+
+			$this->visitedURL[$URL] = TRUE;//set as the root node as already visited.
+
+			$result[$URL] = $this->depthFirstSearch($URL, 1);//call the depth first search recursive function
+		}
 
 		return $result;
 	}
