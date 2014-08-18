@@ -55,8 +55,6 @@ class phpCrawler {
 			
 			$this->host = $this->getDomain($URL);
 
-			echo $this->host;
-
 			$this->visitedURL[$URL] = TRUE;//set as the root node as already visited.
 
 			$result[$URL] = $this->depthFirstSearch($URL, 1);//call the depth first search recursive function
